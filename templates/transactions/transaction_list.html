@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row p-4">
+        <div class="col-12 text-center h3 pb-2">KNLS Books Transactions</div>
+        <div class="col-12">
+            <div class="row py-4">
+                <form method="GET">
+                <div class="btn-toolbar justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
+                    <div class="input-group input-group-lg">
+                        <select name="field" class="input-group-text">
+                            <option value="id">T-ID</option>
+                            <option value="book">Book</option>
+                            <option value="member">Member</option>
+                        </select>
+                        <input type="text" name="search" class="form-control" placeholder="Text here...">
+                        <button class="btn btn-outline-primary" type="submit">Search Transaction</button>
+                    </div>
+                </div>
+                </form>
+            </div>
+            <div class="row">
+                <div class="col-12 h5 py-2">{% block title %}{{title}}{% endblock %}</div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Transaction ID</th>
+                            <th scope="col">Book</th>
+                            <th scope="col">Member</th>
+                            <th scope="col">Borrow Date</th>
+                            <th scope="col">Return Date</th>
+                            <th scope="col">status</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for row in items %}
+                        <tr>
+                            <th scope="row">{{loop.index}}</th>
+                            <td>{{row.uuid}}</td>
+                            <td><a href="{{url_for('books_retrieve', id=row.book_rent.uuid)}}">{{row.book_rent.name}}</a></td>
+                            <td><a href="{{url_for('members_retrieve', id=row.member_rent.uuid)}}">{{row.member_rent.first_name}} {{row.member_rent.second_name}}</a></td>
+                            <td>{{row.rent_date.strftime('%Y-%m-%d')}}</td>
+                            <td>{% if row.return_date %} {{row.return_date.strftime('%Y-%m-%d')}} {% else %} None {% endif %}</td>
+                            <td>
+                                {% if row.status == "RENTED" %}
+                                    <span class="badge rounded-pill bg-primary">Issued</span>
+                                {% elif row.status == "RETURNED" %}
+                                    {% if row.rent_paid %}
+                                        <span class="badge rounded-pill bg-success">Returned</span>
+                                    {% else %}
+                                        <span class="badge rounded-pill bg-danger">Not Paid</span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="badge rounded-pill bg-dark">{{row.status.title()}}</span>
+                                    {% if row.rent_paid %}
+                                        <span class="badge rounded-pill bg-dark">Paid</span>
+                                    {% else %}
+                                        <span class="badge rounded-pill bg-danger">Not Paid</span>
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{url_for('transactions_retrieve', id=row.uuid)}}" class="btn btn-outline-dark">Details</a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr><td class="text-center text-primary" colspan="10">No Data Available</td> </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

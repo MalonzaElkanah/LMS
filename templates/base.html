@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <title>{% block title %}{% endblock %} | KNLS System</title>
+
+        <link href="{{ url_for('static', filename='bootstrap-5.0.2-dist/css/bootstrap.min.css') }}" rel="stylesheet">
+        <!--link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"-->
+    </head>
+
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='bootstrap-logo-white.svg') }}" width="38" height="30" class="d-inline-block align-top" alt="Bootstrap" loading="lazy" style="filter: invert(1) grayscale(100%) brightness(200%);">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{{ url_for('index') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('books_list') }}">Books</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('members_list') }}">Members</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('transactions_list') }}">Transactions</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                {% if g.user %}
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="#">{{ g.user['email'] }}</a>
+                    </li>
+                    </ul>
+                    <a class="btn btn-outline-dark" href="{{url_for('user_logout')}}">Log Out</a>
+                {% else %}
+                    <a class="btn btn-outline-dark" href="{{url_for('user_register')}}">Register</a>
+                    <a class="btn btn-outline-dark" href="{{url_for('user_login')}}">Log In</a>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+    <content>
+        <section class="container">
+            <header class="pt-3">
+                {% block header %}{% endblock %}
+            </header>
+            {% for message in get_flashed_messages() %}
+                <div class="alert alert-primary" role="alert">{{ message }}</div>
+            {% endfor %}
+            {% block content %}{% endblock %}
+        </section>
+    </content>
+
+    <script src="{{ url_for('static', filename='bootstrap-5.0.2-dist/js/bootstrap.bundle.min.js') }}"></script>
+    {% block js %}
+    {% endblock %}
+
+    </html>

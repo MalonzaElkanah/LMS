@@ -1,0 +1,10 @@
+/venv
+.env
+
+*.pyc
+
+.pytest_cache
+
+.ruff_cache
+.flake8
+.pre-commit-config.yaml

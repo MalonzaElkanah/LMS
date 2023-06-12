@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row p-4">
+        <div class="col-12 text-center h3 pb-2">KNLS Library Members</div>
+        <div class="col-12">
+            <div class="row py-4">
+                <form method="GET">
+                <div class="btn-toolbar justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
+                    <div class="input-group input-group-lg">
+                        <select name="field" class="input-group-text">
+                            <option value="name">Name</option>
+                            <option value="id_number">ID No.</option>
+                        </select>
+                        <input type="text" name="search" class="form-control" placeholder="Text here...">
+                        <button class="btn btn-outline-primary" type="submit">Search Member</button>
+                    </div>
+                </div>
+                </form>
+            </div>
+            <div class="row">
+                <div class="d-flex py-2 justify-content-between">
+                    <span class="h5">{% block title %}{{title}}{% endblock %}</span>
+                    <a class="btn btn-primary" href="{{ url_for('members_create') }}" title="add new members">Add Member</a>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">ID Number</th>
+                            <th scope="col">Outstanding Fee</th>
+                            <th scope="col">Date Added</th>
+                            <th scope="col">Added By</th>
+                            <th scope="col">status</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for row in items %}
+                        <tr>
+                            <th scope="row">{{loop.index}}</th>
+                            <td>{{row.first_name}} {{row.second_name}}</td>
+                            <td>{{row.id_number}}</td>
+                            <td>{{row.outstanding_fee}}</td>
+                            <td>{{row.date_created.strftime('%Y-%m-%d')}}</td>
+                            <td>{{row.user_added_by.email}}</td>
+                            <td>{% if row.status == "ACTIVE" %} <span class="badge rounded-pill bg-primary">Active</span> {% elif row.status == "INACTIVE" %} <span class="badge rounded-pill bg-danger">Inactive</span> {% elif row.status == "DEFAULTED" %} <span class="badge rounded-pill bg-warning">Defaulted</span> {% else %} <span class="badge rounded-pill bg-dark">{{row.status}}</span> {% endif %}</td>
+                            <td>
+                                <a href="{{url_for('members_retrieve', id=row.uuid)}}" class="btn btn-outline-dark">Details</a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr><td class="text-center text-primary" colspan="7">No Data Available</td> </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

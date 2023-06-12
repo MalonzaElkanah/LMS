@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('members_list') }}">Members</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{% block title %}{{title}}{% endblock %}</li>
+        </ol>
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <div class="row pt-2 pb-4">
+        <article class="blog-post pt-3">
+            <h2 class="blog-post-title py-4">{{item.first_name}} {{item.second_name}}</h2>
+            <div class="col-12">
+                <div class="row">
+                    <p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">Library ID</p>
+                    <p class="col-sm-10">{{item.uuid}} </p>
+                </div>
+                <div class="row">
+                    <p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">National ID</p>
+                    <p class="col-sm-10">{{item.id_number}}</p>
+                </div>
+                <div class="row">
+                    <p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">Date Added</p>
+                    <p class="col-sm-10">{{item.date_created.strftime('%A, %d %B %Y %I:%M %p')}}</p>
+                </div>
+                <div class="row">
+                    <p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">Added By</p>
+                    <p class="col-sm-10">{{item.user_added_by.email}}</p>
+                </div>
+                <div class="row">
+                    <p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">Outstanding Fee</p>
+                    <p class="col-sm-10">{{item.outstanding_fee}}</p>
+                </div>
+                <div class="row">
+                    <p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">Status</p>
+                    <p class="col-sm-10">
+                        {% if item.status == "ACTIVE" %} <span class="badge rounded-pill bg-primary">Active</span> {% elif item.status == "INACTIVE" %} <span class="badge rounded-pill bg-danger">Inactive</span> {% elif item.status == "DEFAULTED" %} <span class="badge rounded-pill bg-warning">Defaulted</span> {% else %} <span class="badge rounded-pill bg-dark">{{item.status}}</span> {% endif %}
+                    </p>
+                </div>
+            </div>
+        </article>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <a href="{{url_for('members_update', id=item.uuid)}}" class="btn btn-primary">UPDATE</a>
+            <a href="{{url_for('members_delete', id=item.uuid)}}" class="btn btn-danger">DELETE</a>
+            <a href="{{url_for('member-books_issue', id=item.uuid)}}" class="btn btn-outline-dark">ISSUE BOOK</a>
+        </div>
+    </div>
+
+    <div class="row py-4">
+        <div class="col-12 h4">Library Transactions</div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Transaction ID</th>
+                    <th scope="col">Book</th>
+                    <th scope="col">Issued Date</th>
+                    <th scope="col">Return Date</th>
+                    <th scope="col">Rent Fee</th>
+                    <th scope="col">Rent Days</th>
+                    <th scope="col">status</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for row in item.transactions %}
+                <tr>
+                    <th scope="row">{{loop.index}}</th>
+                    <td>{{row.uuid}}</td>
+                    <td><a href="{{url_for('books_retrieve', id=row.book_rent.uuid)}}">{{row.book_rent.name}}</a></td>
+                    <td>{{row.rent_date.strftime('%Y-%m-%d')}}</td>
+                    <td>{% if row.return_date %} {{row.return_date.strftime('%Y-%m-%d')}} {% else %} None {% endif %}</td>
+                    <td>{{row.rent_fee}}</td>
+                    <td>{{row.rent_days}}</td>
+                    <td>{% if row.status == "RENTED" %}
+                            <span class="badge rounded-pill bg-primary">Issued</span>
+                        {% elif row.status == "RETURNED" %}
+                            {% if row.rent_paid %}<span class="badge rounded-pill bg-success">Returned</span>{% else %}<span class="badge rounded-pill bg-danger">Not Paid</span>{% endif %}
+                        {% else %}
+                            <span class="badge rounded-pill bg-dark">{{row.status.title()}}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{url_for('transactions_retrieve', id=row.uuid)}}" class="btn btn-outline-dark">Details</a>
+                        {% if item.status in ["RENTED", "OVERDUE",] %}<a href="{{url_for('transactions_return-book', id=row.uuid)}}" class="btn btn-outline-success">RETURN BOOK</a>{% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td class="text-center text-primary" colspan="10">No Data Available</td> </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

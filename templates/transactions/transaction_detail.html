@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('transactions_list') }}">Transactions</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{% block title %}{{title}}{% endblock %}</li>
+        </ol>
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <div class="row pt-2 pb-4">
+        <article class="blog-post pt-3">
+            <h2 class="blog-post-title py-4">Transaction: {{item.uuid}}</h2>
+            <div class="col-12">
+                <div class="row">
+                    <p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">Book</p>
+                    <p class="col-sm-10"><a href="{{url_for('books_retrieve', id=item.book_rent.uuid)}}">{{item.book_rent.name}}</a></p>
+                </div>
+                <div class="row">
+                    <p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">Member</p>
+                    <p class="col-sm-10"><a href="{{url_for('members_retrieve', id=item.member_rent.uuid)}}">{{item.member_rent.first_name}} {{item.member_rent.second_name}}</a></p>
+                </div>
+                <div class="row">
+                    <p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">Issued Date</p>
+                    <p class="col-sm-10">{{item.rent_date.strftime('%A, %d %B %Y %I:%M %p')}}</p>
+                </div>
+                <div class="row">
+                    <p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">Issued By</p>
+                    <p class="col-sm-10">{{item.user_rent.email}}</p>
+                </div>
+                <div class="row">
+                    <p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">Rent Fee</p>
+                    <p class="col-sm-10">{{item.rent_fee}}</p>
+                </div>
+                <div class="row">
+                    <p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">Rent Paid</p>
+                    <p class="col-sm-10">{% if item.rent_paid %}PAID{% else %}NOT_PAID{% endif %}</p>
+                </div>
+                <div class="row">
+                    <p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">Rent Days</p>
+                    <p class="col-sm-10">{{item.rent_days}}</p>
+                </div>
+                <div class="row">
+                    <p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">Return Date</p>
+                    <p class="col-sm-10">{% if item.return_date %} {{item.return_date.strftime('%A, %d %B %Y %I:%M %p')}} {% else %} None {% endif %}</p>
+                </div>
+                <div class="row">
+                    <p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">Return By</p>
+                    <p class="col-sm-10">{{item.user_return.email}}</p>
+                </div>
+                <div class="row">
+                    <p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">Status</p>
+                    <p class="col-sm-10">
+                        {% if item.status == "RENTED" %}
+                            <span class="badge rounded-pill bg-primary">Issued</span>
+                        {% elif item.status == "RETURNED" %}
+                            <span class="badge rounded-pill bg-success">Returned</span>
+                            {% if item.rent_paid %}
+                                <span class="badge rounded-pill bg-dark">Paid</span>
+                            {% else %}
+                                <span class="badge rounded-pill bg-danger">Not Paid</span>
+                            {% endif %}
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </article>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            {% if item.status in ["RENTED", "OVERDUE",] %}<a href="{{url_for('transactions_return-book', id=item.uuid)}}" class="btn btn-outline-success">RETURN BOOK</a>{% elif not item.rent_paid %}<a href="{{url_for('transactions_pay-fee', id=item.uuid)}}" class="btn btn-outline-success">PAY FEE</a>{% endif %}
+            <a href="{{url_for('transactions_delete', id=item.uuid)}}" class="btn btn-outline-danger">DELETE</a>
+        </div>
+    </div>
+
+{% endblock %}

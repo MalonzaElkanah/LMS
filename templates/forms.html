@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{% block title %}{{title}}{% endblock %}</li>
+        </ol>
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <div class="row p-4">
+        <div class="col-12 text-center h4 pb-2">{{title}}</div>
+        <form method="post" enctype="multipart/form-data">
+        {% for name, type in form.items() %}
+            {% if type == 'textarea' %}
+            <div class="form-group row mb-4">
+                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">{{name.replace("_", " ").title()}}</label>
+                <div class="col-sm-12 col-md-7">
+                    <textarea class="form-control" name="{{name}}" rows="5">{{item[name]}}</textarea>
+                </div>
+            </div>
+            {% elif type == 'datetime-local' %}
+            <div class="form-group row mb-4">
+                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">{{name.replace("_", " ").title()}}</label>
+                <div class="col-sm-12 col-md-7">
+                    <input type="{{type}}" class="form-control" name="{{name}}"
+                    value="{% if item[name] %}{{item[name].strftime('%Y-%m-%dT%H:%M:%S')}}{% endif %}" required="" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}">
+                </div>
+            </div>
+            {% elif type == 'select' %}
+            <div class="form-group row col mb-4">
+                <label class="col-form-label text-md-right col-lg-3 col-md-3 col-sm-12">{{name.replace("_", " ").title()}}</label>
+                <div class="col-sm-12 col-md-7">
+                    <select class="form-control" name="{{name}}" required="">
+                        {% for option in select_item %}
+                        <option value="{{option}}" {% if option == item[name] %}selected=""{% endif %}>{{option}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            {% elif type == 'checkbox' %}
+            <div class="form-group row mb-4">
+                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">{{name.replace("_", " ").title()}}</label>
+                <div class="col-sm-12 col-md-7">
+                    <input type="checkbox" class="form-check-input" name="{{name}}" {% if item[name] %} checked="" {% endif %}>
+                </div>
+            </div>
+            {% elif type == 'hidden' %}
+                <input type="{{type}}" class="form-control" name="{{name}}" value="{{item[name]}}" required="">
+            {% elif type == 'disabled' %}
+            <div class="form-group row mb-4">
+                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">{{name.replace("_", " ").title()}}</label>
+                <div class="col-sm-12 col-md-7">
+                    <input type="text" class="form-control" name="{{name}}" value="{{item[name]}}" required="" disabled>
+                </div>
+            </div>
+            {% else %}
+            <div class="form-group row mb-4">
+                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">{{name.replace("_", " ").title()}}</label>
+                <div class="col-sm-12 col-md-7">
+                    <input type="{{type}}" class="form-control" name="{{name}}" value="{{item[name]}}" required="">
+                </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+
+
+            <div class="form-group row mb-4">
+                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3"></label>
+                <div class="col-sm-12 col-md-7">
+                    <button type="submit" class="btn btn-primary">SUBMIT</button>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}

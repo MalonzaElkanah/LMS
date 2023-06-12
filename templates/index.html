@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row p-4">
+        <div class="col-12 text-center h4 pb-2">{% block title %}{{title}}{% endblock %}</div>
+        <div class="col-12">
+            <div class="row">
+                <div class="col-md-4 col-12 py-2">
+                    <div class="card">
+                      <div class="row g-0">
+                        <div class="col-md-12">
+                          <div class="card-body">
+                            <h5 class="card-title">Books</h5>
+                            <p class="card-text">Manage library books, for instance, Add, List, Update, Retrieve, Delete, Issue and Return library books.</p>
+                            <a class="stretched-link" href="{{ url_for('books_list') }}"></a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-12 py-2">
+                    <div class="card">
+                      <div class="row g-0">
+                        <div class="col-md-12">
+                          <div class="card-body">
+                            <h5 class="card-title">Members</h5>
+                            <p class="card-text">Manage library members, for instance, Add, List, Update, Retrieve and Delete library members.</p>
+                            <a class="stretched-link" href="{{ url_for('members_list') }}"></a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-12 py-2">
+                    <div class="card">
+                      <div class="row g-0">
+                        <div class="col-md-12">
+                          <div class="card-body">
+                            <h5 class="card-title">Transactions</h5>
+                            <p class="card-text">Manage library book transactions, for instance, List, Update, Retrieve and Delete library book transactions.</p>
+                            <a class="stretched-link" href="{{ url_for('transactions_list') }}"></a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
