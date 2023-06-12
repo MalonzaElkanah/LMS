@@ -37,7 +37,7 @@
 ![View Book Issue Transaction List Screenshot](/screenshots/Screenshot-11-List-Transactions.png "List Book Issue Transactions")
 
 8. Issue a book return from a member
-![View Member Screenshot](/screenshots/Screenshot-12-Transactions-Details.png "View Book Issue Transaction in Detail")
+![View Member Screenshot](/screenshots/Screenshot-12-Transaction-Details.png "View Book Issue Transaction in Detail")
 
 ### Todo
 -
